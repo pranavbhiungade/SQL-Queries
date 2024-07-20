@@ -11,6 +11,39 @@ CREATE TABLE Worker (
 	DEPARTMENT CHAR(25)
 );
 
+CREATE TABLE Emp (
+	Id INT NOT NULL PRIMARY KEY,
+	empName CHAR(25),
+	address CHAR(25)
+);
+CREATE TABLE Dept (
+	Did INT NOT NULL PRIMARY KEY,
+	DName CHAR(25),
+    Id int,
+	foreign key (Did) references Emp(Id)
+);
+
+INSERT INTO Emp (Id, empName, address) VALUES (1, 'John Doe', '123 Elm St');
+INSERT INTO Emp (Id, empName, address) VALUES (2, 'Jane Smith', '456 Oak St');
+INSERT INTO Emp (Id, empName, address) VALUES (3, 'Alice Johnson', '789 Pine St');
+INSERT INTO Emp (Id, empName, address) VALUES (4, 'Michael Brown', '101 Maple St');
+INSERT INTO Emp (Id, empName, address) VALUES (5, 'Emily Davis', '202 Birch St');
+INSERT INTO Emp (Id, empName, address) VALUES (6, 'William Wilson', '303 Cedar St');
+INSERT INTO Emp (Id, empName, address) VALUES (7, 'Olivia Martinez', '404 Walnut St');
+
+INSERT INTO Dept (Did, DName, Id) VALUES (1, 'HR', 1);
+INSERT INTO Dept (Did, DName, Id) VALUES (2, 'IT', 2);
+INSERT INTO Dept (Did, DName, Id) VALUES (3, 'Finance', 3);
+
+-- correlated subquery 
+select * from Emp where exists (select * from Dept where Dept.Id = Emp.Id);
+
+--  using inner join
+select Emp.Id,Emp.empName,Emp.address from Emp inner join Dept on Dept.Id = Emp.Id; 
+
+-- without using join or correlated subquery
+select * from Emp where Emp.Id in (select Dept.Id from Dept); 
+
 INSERT INTO Worker 
 	(WORKER_ID, FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES
 		(001, 'Monika', 'Arora', 100000, '14-02-20 09.00.00', 'HR'),
@@ -61,9 +94,7 @@ INSERT INTO Title
  (006, 'Lead', '2016-06-11 00:00:00'),
  (003, 'Lead', '2016-06-11 00:00:00');
  
- 
 
- 
 -- Q-1. Write an SQL query to fetch “FIRST_NAME” from Worker table using the alias name as <WORKER_NAME>.
   select FIRST_NAME as WORKER_NAME from Worker;
   
@@ -231,22 +262,59 @@ select FIRST_NAME from WORKER where salary in (select max(salary) as maxsal from
 select distinct(Salary) from Worker order by Salary desc limit 3;
 
 -- DRY RUN AFTER REVISING THE CORELATED SUBQUERY CONCEPT FROM LEC-9.
-
+select salary from worker w1 where 3>= (select count(salary) from worker w2 where w2.salary>=w1.salary);
 
 -- Q-47. Write an SQL query to fetch three min salaries from a table using co-related subquery
-
+select salary from worker w1 where 3>= (select count(salary) from worker w2 where w2.salary<=w1.salary) order by salary desc;
 
 -- Q-48. Write an SQL query to fetch nth max salaries from a table.
-
+-- done 
 
 -- Q-49. Write an SQL query to fetch departments along with the total salaries paid for each of them.
 select DEPARTMENT,SUM(SALARY) FROM WORKER GROUP BY DEPARTMENT;
 
 -- Q-50. Write an SQL query to fetch the names of workers who earn the highest salary.
 SELECT FIRST_NAME,SALARY FROM WORKER WHERE SALARY = (SELECT MAX(SALARY) FROM WORKER);
-
+-- without limit
+-- with subquery  
 
 -- TO DO  
 -- Q-34. Write an SQL query to determine the 5th highest salary without using LIMIT keyword.
- select salary from worker w1 where 4 = (select count((w2.salary)) from worker w2 where w2.salary>=w1.salary);
+ select distinct(salary) from worker w1 where 4 = (select count((w2.salary)) from worker w2 where w2.salary>=w1.salary);
+ -- vimp correlated subquery 
+ select * from Worker;
  
+ 
+ 
+ 
+-- 
+
+
+  
+  
+  
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
